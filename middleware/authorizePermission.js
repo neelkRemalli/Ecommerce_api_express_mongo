@@ -7,8 +7,6 @@ const authorizePermission = (...roles) => {
   }
   next()
   }
-
-  next();
 };
 
 export default authorizePermission;

@@ -8,6 +8,7 @@ import rateLimiter from 'express-rate-limit'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
 import xss from 'xss-clean'
+import cors from 'cors'
 
 
 import connectDb from './config/db.js';
@@ -40,6 +41,7 @@ app.use(mongoSanitize())
 if(process.env.NODE_ENv === `development`){
   app.use(morgan('dev'))
 }
+app.use(cors())
 ///// Middleware //////
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET))

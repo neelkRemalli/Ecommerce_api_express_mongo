@@ -14,7 +14,7 @@ export const getSingleUser = async (req, res) => {
   if (!user) {
     throw new CustomApiError(`User not found`, 404);
   }
-  console.log(user._id.toString(), req.user.userId, req.user.role)
+ 
   if(req.user.role == 'admin' ||user._id.toString() === req.user.userId )  {
     res.status(200).json(user)
   }else{

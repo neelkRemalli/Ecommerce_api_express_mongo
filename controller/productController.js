@@ -44,7 +44,7 @@ export const deleteProduct = async (req, res) => {
   if (!product) {
     throw new CustomApiError(`Product not found`, 404);
   }
-  product.remove()
+ await product.remove()
   res.status(204).json({msg:'Product deleted successfully'});
 };
 /////////// uplaod image //////////
@@ -53,6 +53,7 @@ export const uploadImage = async (req, res) => {
     throw new CustomApiError(`No file upload`, 400)
   }
   const productImage = req.files.image;
+  
   if(!productImage.mimetype.startsWith('image')){
     throw new CustomApiError(`Please file must be an image`, 400)
   }
