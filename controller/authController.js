@@ -21,7 +21,13 @@ export const register = async (req, res) => {
   });
   res
     .status(201)
-    .json({ name: user.name, userId: user._id, role: user.role, token });
+    .json({
+      name: user.name,
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      token,
+    });
 };
 
 ////////// Login ////////////
@@ -45,12 +51,18 @@ export const login = async (req, res) => {
   res.cookie('token', token, {
     httpOnly: true,
     expires: new Date(Date.now() + oneDay),
-    secure: process.env.NODE_ENV === 'production' ? true : false,
+    secure: process.env.NODE_ENV === 'production',
     signed: true,
   });
   res
     .status(200)
-    .json({ name: user.name, userId: user._id, role: user.role, token });
+    .json({
+      name: user.name,
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      token,
+    });
 };
 export const logout = async (req, res) => {
   res.cookie('token', 'logout', {

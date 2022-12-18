@@ -33,7 +33,10 @@ export const getAllReview = async (req, res) => {
 };
 ////////// Get All  Review ///////
 export const getSingleReview = async (req, res) => {
-  const review = await Review.findById(req.params.id);
+  const review = await Review.findById(req.params.id).populate({
+    path: 'product',
+    select: 'name company price',
+  });
   if (!review) {
     throw new CustomApiError(`Review not found`, 404);
   }
@@ -41,22 +44,21 @@ export const getSingleReview = async (req, res) => {
 };
 ////////// Update  Review ///////
 export const updateReview = async (req, res) => {
-  const {rating, title, comment} = req.body;
-  
+  const { rating, title, comment } = req.body;
+
   const review = await Review.findById(req.params.id);
   if (!review) {
     throw new CustomApiError(`Review not found`, 404);
   }
-  
+
   if (req.user.role === 'admin' || review.user.toString() === req.user.userId) {
-    review.rating = rating  || review.rating;
+    review.rating = rating || review.rating;
     review.title = title || review.title;
     review.comment = comment || review.comment;
-   
   } else {
     throw new CustomApiError(`Not authorized to deleted this review`, 403);
   }
-  await review.save()
+  await review.save();
   res.status(200).json(review);
 };
 ////////// Delete  Review ///////
@@ -77,8 +79,8 @@ export const deleteReview = async (req, res) => {
 
 ////////// get signle product  Review ///////
 
-export const getSingleProductReview = async( req, res) =>{
-  const {id:productId} = req.params;
-  const reviews = await Review.find({product:productId})
-  res.status(200).json(reviews)
-}
+export const getSingleProductReview = async (req, res) => {
+  const { id: productId } = req.params;
+  const reviews = await Review.find({ product: productId });
+  res.status(200).json(reviews);
+};

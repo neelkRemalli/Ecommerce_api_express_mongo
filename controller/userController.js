@@ -31,27 +31,24 @@ export const showCurrentUser = async (req, res) => {
 ///////// Update User /////////
 export const updateUser = async (req, res) => {
   const { name, email } = req.body;
-  if (!name || !email) {
-    throw new CustomApiError(`Please provide email and name`, 400);
-  }
-  const user = await User.findOneAndUpdate(
-    { _id: req.user.userId },
-    { name, email },{
-        new: true,
-        runValidators: true
-    }
-  );
-  const token = user.createJWT()
-  const oneDay = 60 * 60 * 100 * 24
-  res.cookie('token', token,{
-      httpOnly: true,
-      expires:new Date(Date.now() + oneDay),
-      asinged: true,
-      secure: process.env.NODE_ENV === 'production' 
-  })
+ 
+  const user = await User.findOne({_id:req.user.userId})
 
-  res.status(200).json(user);
-};
+    user.name = name || user.name;
+    user.email = email || user.email;
+    await user.save()
+       const token = user.createJWT()
+    const oneDay = 60 * 60 * 100 * 24
+    res.cookie('token', token,{
+        httpOnly: true,
+        expires:new Date(Date.now() + oneDay),
+        asinged: true,
+        secure: process.env.NODE_ENV === 'production' 
+    })
+  
+    res.status(200).json(user);
+ }
+
 
 ///////// UPdate Password User /////////
 export const upadateUserPassword = async (req, res) => {
@@ -70,5 +67,5 @@ export const upadateUserPassword = async (req, res) => {
 
   user.password = newPassword;
   user.save();
-  res.status(200).json('password updated successfully');
+  res.status(200).json({msg:'password updated successfully'});
 };
